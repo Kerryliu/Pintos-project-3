@@ -93,7 +93,7 @@ thread_init (void)
   list_init (&ready_list);
   list_init (&all_list);
 
-  initFrameTable();
+  frame_table_init();
 
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();

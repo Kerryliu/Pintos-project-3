@@ -1,26 +1,28 @@
 #ifndef VM_FRAME_H
 #define VM_FRAME_H
 
+#include "threads/palloc.h"
+#include "threads/synch.h"
+#include "vm/page.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <list.h>
-#include "threads/thread.h"
-#include "threads/synch.h"
 
-struct lock frameTableLock;
-struct list frameTable;
+struct lock frame_table_lock;
 
-struct frameEntry {
-	void *frame;
-	tid_t tid;
-	uint32_t *pte;
-	struct list_elem elem;
+struct list frame_table;
+
+struct frame_entry {
+  void *frame;
+  struct sup_page_entry *spte;
+  struct thread *thread;
+  struct list_elem elem;
 };
 
-void initFrameTable(void);
-void* allocateFrame(enum palloc_flags flags);
-void addFrameToTable(void *frame);
-void freeFrame(void *frame);
-bool evictFrame(void *frame);
+void frame_table_init (void);
+void* frame_alloc (enum palloc_flags flags, struct sup_page_entry *spte);
+void frame_free (void *frame);
+void frame_add_to_table (void *frame, struct sup_page_entry *spte);
+void* frame_evict (enum palloc_flags flags);
 
-#endif
+#endif /* vm/frame.h */
